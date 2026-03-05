@@ -40,3 +40,19 @@ exports.searchProductsController = async (req, res) => {
     res.status(500).json({ message: "Search failed" });
   }
 };
+
+exports.fetchAllProductsBySubcat = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const results = await productModel.searchAllProductsBySubCat(id);
+    res.json({
+      message: "Products fetched successfully...",
+      products: results
+    });
+  } catch (e) {
+    res.status(500).json({
+      message: e.sqlMessage || e.message || "Internal Server Error."
+    });
+  }
+};
+

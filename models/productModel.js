@@ -38,6 +38,16 @@ const productModel = {
         resolve(result);
       });
     });
+  },
+  searchAllProductsBySubCat: (id) => {
+    return new Promise((resolve, reject) => {
+      const query = `select * from products where sub_category_id = ?`;
+     
+      db.query(query, [id], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
   }
 };
 

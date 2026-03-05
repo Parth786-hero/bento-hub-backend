@@ -59,22 +59,45 @@ db.connect((err) => {
         console.log("Category table created or already exists");
       });
 
-      // Products table
-      const createProductsTable = `
-        CREATE TABLE IF NOT EXISTS products (
+      // Sub-categories table
+      const createSubCategoryTable = `
+        CREATE TABLE IF NOT EXISTS sub_categories (
           id INT AUTO_INCREMENT PRIMARY KEY,
-          name VARCHAR(150) NOT NULL,
-          description TEXT,
-          price DECIMAL(10,2) NOT NULL,
-          discounted_price DECIMAL(10,2) NOT NULL DEFAULT 0,
-          image_url VARCHAR(255),
-          stock INT DEFAULT 0,
-          quantity VARCHAR(150) NOT NULL,
           category_id INT NOT NULL,
+          name VARCHAR(150) NOT NULL,
+          slug VARCHAR(150) UNIQUE,
+          description TEXT,
+          image_url VARCHAR(255),
+          is_active BOOLEAN DEFAULT TRUE,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
           FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
         );
+      `;
+      db.query(createSubCategoryTable, (err) => {
+        if (err) throw err;
+        console.log("Sub-categories table created or already exists");
+      });
+
+      // Products table
+      const createProductsTable = `
+      CREATE TABLE IF NOT EXISTS products (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(150) NOT NULL,
+        description TEXT,
+        price DECIMAL(10,2) NOT NULL,
+        discounted_price DECIMAL(10,2) NOT NULL DEFAULT 0,
+        image_url VARCHAR(255),
+        stock INT DEFAULT 0,
+        quantity VARCHAR(150) NOT NULL,
+        category_id INT,
+        sub_category_id INT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+        FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id) ON DELETE SET NULL
+      );
+      
       `;
       db.query(createProductsTable, (err) => {
         if (err) throw err;

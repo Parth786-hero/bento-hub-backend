@@ -3,10 +3,11 @@ const { registerUser } = require("../controllers/userController");
 const {loginUser} = require("../controllers/loginController");
 const {getMe} = require("../controllers/getMeController");
 const {logoutUser} = require("../controllers/logoutController");
-const {categoryController} = require("../controllers/categoryController");
-const {productController , searchProductsController} = require("../controllers/productController");
+const {categoryController , fetchAllSubCategoryController} = require("../controllers/categoryController");
+const {productController , searchProductsController , fetchAllProductsBySubcat} = require("../controllers/productController");
 const {categoryWiseProductController} = require("../controllers/categoryWiseProductController");
-const { saveCart , getCart } = require("../controllers/cartController");
+const { saveCart , getCart , checkoutCart} = require("../controllers/cartController");
+
 const authMiddleware = require("../middleware/index");
 const router = express.Router();
 
@@ -21,4 +22,7 @@ router.get("/products/category/:id" , categoryWiseProductController);
 router.get("/products/search" , searchProductsController);
 router.post("/saveCart" , authMiddleware , saveCart);
 router.get("/getCart" , authMiddleware , getCart);
+router.get("/getAllSubCatById/:id" , fetchAllSubCategoryController);
+router.get("/getProductsSubCatWise/:id" , fetchAllProductsBySubcat);
+router.put("/checkout", authMiddleware , checkoutCart);
 module.exports = router;
