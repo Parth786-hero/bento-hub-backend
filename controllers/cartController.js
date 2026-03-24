@@ -43,21 +43,25 @@ exports.clearCart = async (req, res) => {
 };
 
 exports.checkoutCart = async (req, res) => {
- 
+  
   try {
     const userId = req.user.id;
    
-      const { cart_id } = req.body;
+      const { cart_id , donation} = req.body;
       if (!cart_id) {
         
         return res.status(400).json({ message: "cart_id is required" });
       }
-      const result = await cartModel.checkoutCart(cart_id, userId);
+      const result = await cartModel.checkoutCart(cart_id, userId , donation);
       if (result.affectedRows === 0) {
         return res
           .status(404)
           .json({ message: "Cart not found or not owned by user" });
       }
+
+      await cartModel.snapshotCartItems(cart_id);
+      await cartModel.decrementStock(cart_id);
+      await cartModel.clearCart(cart_id);
       res.json({ message: "Cart marked as completed" });
   } catch (err) {
     res.status(500).json({ message: "Failed to checkout cart" });

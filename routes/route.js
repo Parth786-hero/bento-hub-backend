@@ -4,7 +4,7 @@ const {loginUser} = require("../controllers/loginController");
 const {getMe} = require("../controllers/getMeController");
 const {logoutUser} = require("../controllers/logoutController");
 const {categoryController , fetchAllSubCategoryController} = require("../controllers/categoryController");
-const {productController , searchProductsController , fetchAllProductsBySubcat} = require("../controllers/productController");
+const {productController , searchProductsController , fetchAllProductsBySubcat , insertIntoProductsController , updateProductByIdController} = require("../controllers/productController");
 const {categoryWiseProductController} = require("../controllers/categoryWiseProductController");
 const { saveCart , getCart , checkoutCart} = require("../controllers/cartController");
 
@@ -25,4 +25,6 @@ router.get("/getCart" , authMiddleware , getCart);
 router.get("/getAllSubCatById/:id" , fetchAllSubCategoryController);
 router.get("/getProductsSubCatWise/:id" , fetchAllProductsBySubcat);
 router.put("/checkout", authMiddleware , checkoutCart);
+router.post("/products" , insertIntoProductsController);
+router.put("/products/:id" , updateProductByIdController);
 module.exports = router;

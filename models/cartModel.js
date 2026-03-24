@@ -62,15 +62,54 @@ const cartModel = {
       });
     });
   },
-  checkoutCart: (cartId, userId) => {
+  checkoutCart: (cartId, userId, donation) => {
     return new Promise((resolve, reject) => {
-      const sql = ` UPDATE carts SET status = 'completed', updated_at = CURRENT_TIMESTAMP WHERE cart_id = ? AND user_id = ? `;
-      db.query(sql, [cartId, userId], (err, result) => {
+      const sql = `
+        UPDATE carts 
+        SET status = 'completed', donation = ?, updated_at = CURRENT_TIMESTAMP 
+        WHERE cart_id = ? AND user_id = ?
+      `;
+      db.query(sql, [donation, cartId, userId], (err, result) => {
         if (err) return reject(err);
         resolve(result);
       });
     });
   },
+  snapshotCartItems: (cartId) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+        INSERT INTO cart_snapshots (cart_id, product_id, purchased_price, quantity)
+        SELECT ci.cart_id, ci.product_id,
+               CASE 
+                 WHEN p.discounted_price > 0 THEN p.discounted_price
+                 ELSE p.price
+               END AS purchased_price,
+               ci.count
+        FROM cart_items ci
+        JOIN products p ON ci.product_id = p.id
+        WHERE ci.cart_id = ?
+      `;
+      db.query(sql, [cartId], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+  },
+  decrementStock: (cartId) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+        UPDATE products p
+        JOIN cart_items ci ON p.id = ci.product_id
+        SET p.stock = p.stock - ci.count
+        WHERE ci.cart_id = ?
+      `;
+      db.query(sql, [cartId], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+  },
+  
 };
 
 module.exports = cartModel;

@@ -15,10 +15,11 @@ const categoryModel = {
       const sql = "SELECT * FROM sub_categories where category_id = ?";
       db.query(sql, [id] , (err, result) => {
         if (err) return reject(err);
+        
         resolve(result);
       });
     });
-  },
+  }
 };
 
 module.exports = categoryModel;

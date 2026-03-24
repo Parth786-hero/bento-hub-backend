@@ -91,7 +91,7 @@ db.connect((err) => {
         stock INT DEFAULT 0,
         quantity VARCHAR(150) NOT NULL,
         category_id INT,
-        sub_category_id INT,
+        sub_category_id INT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
@@ -110,6 +110,7 @@ db.connect((err) => {
           cart_id INT AUTO_INCREMENT PRIMARY KEY,
           user_id INT NOT NULL,
           status ENUM('active','completed') DEFAULT 'active',
+          donation BOOLEAN DEFAULT FALSE,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -137,6 +138,23 @@ db.connect((err) => {
       db.query(createCartItemsTable, (err) => {
         if (err) throw err;
         console.log("Cart items table created or already exists");
+      });
+      // cart snapshot
+      const createCartSnapshotsTable = `
+        CREATE TABLE IF NOT EXISTS cart_snapshots (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          cart_id INT NOT NULL,
+          product_id INT NOT NULL,
+          purchased_price DECIMAL(10,2) NOT NULL,
+          quantity INT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (cart_id) REFERENCES carts(cart_id) ON DELETE CASCADE,
+          FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+        );
+      `;
+      db.query(createCartSnapshotsTable, (err) => {
+        if (err) throw err;
+        console.log("Cart snapshots table created or already exists");
       });
     });
   });
