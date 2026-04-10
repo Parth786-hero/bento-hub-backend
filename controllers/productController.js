@@ -157,4 +157,38 @@ exports.updateProductByIdController = async (req, res) => {
 };
 
 
+exports.fetchProductsOnScrollController = async (req, res) => {
+  try {
+    
+    // Extract query params
+    const limit = parseInt(req.query.limit) || 6;
+    const lastId = req.query.lastId || null;
+
+    // Call the model method
+    const result = await productModel.fetchProductsOnScroll({ limit, lastId });
+
+    // If no products found
+    if (!result.products || result.products.length === 0) {
+      return res.status(200).json({
+        message: "No products found",
+        products: [],
+        lastId: null,
+        hasMore: false
+      });
+    }
+
+    // Success response
+    res.status(200).json({
+      message: "Products fetched successfully",
+      products: result.products,
+      lastId: result.lastId,
+      hasMore: result.hasMore
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      message: e.sqlMessage || e.message || "Internal Server Error."
+    });
+  }
+};
 

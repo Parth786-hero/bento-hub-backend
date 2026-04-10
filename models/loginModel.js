@@ -11,6 +11,15 @@ const loginModel = {
         resolve(results[0]); // return first user or undefined
       });
     });
+  },
+  changePassword: (id, hashedPassword) => {
+    return new Promise((resolve, reject) => {
+      const query = "UPDATE users SET password = ? WHERE id = ?";
+      db.query(query, [hashedPassword, id], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
   }
 };
 

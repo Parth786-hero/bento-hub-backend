@@ -112,6 +112,47 @@ const productModel = {
       });
     });
   },
+  fetchProductsOnScroll: ({ limit, lastId }) => {
+    return new Promise((resolve, reject) => {
+      let query;
+      let values;
+  
+      if (lastId) {
+        // Fetch products after the given lastId
+        query = `
+          SELECT * 
+          FROM products 
+          WHERE id > ? 
+          ORDER BY id ASC 
+          LIMIT ?
+        `;
+        values = [lastId, limit];
+      } else {
+        // First batch (no cursor yet)
+        query = `
+          SELECT * 
+          FROM products 
+          ORDER BY id ASC 
+          LIMIT ?
+        `;
+        values = [limit];
+      }
+  
+      db.query(query, values, (err, result) => {
+        if (err) return reject(err);
+  
+        const hasMore = result.length === limit;
+        const newLastId = result.length ? result[result.length - 1].id : null;
+  
+        resolve({
+          products: result,
+          lastId: newLastId,
+          hasMore
+        });
+      });
+    });
+  }
+  
 };
 
 module.exports = productModel;

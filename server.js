@@ -20,17 +20,17 @@ const router = require("./routes/route");
 // Create an Express application instance
 const app = express();
 
+
+
+
+
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST" , "PUT"],
+    methods: ["GET", "POST" , "PUT" , "PATCH"],
     credentials: true,
   })
 );
-
-
-
-
 
 // Middleware to handle JSON request bodies
 // app.use(bodyParser.json());

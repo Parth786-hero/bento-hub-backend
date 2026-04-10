@@ -27,7 +27,7 @@ db.connect((err) => {
           fname VARCHAR(100) NOT NULL,
           lname VARCHAR(100) NOT NULL,
           email VARCHAR(100) UNIQUE NOT NULL,
-          number VARCHAR(20) NOT NULL,
+          number VARCHAR(20) unique NOT NULL,
           password VARCHAR(255) NOT NULL,
           state VARCHAR(100) NOT NULL,
           city VARCHAR(100) NOT NULL,

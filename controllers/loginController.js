@@ -35,7 +35,7 @@ exports.loginUser = async (req, res) => {
       httpOnly: true,
       secure: false, // set true in production with HTTPS
       sameSite: "lax",
-     
+
       // maxAge: 60 * 60 * 1000,
     });
 
@@ -45,5 +45,46 @@ exports.loginUser = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Database error", error: err });
+  }
+};
+
+exports.retrieveUser = async (req, res) => {
+  const { number } = req.query;
+
+  if (!number) {
+    return res.status(400).json({ message: "number is required" });
+  }
+
+  try {
+    // Fetch user from DB
+    const user = await loginModel.fetchUser(number);
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid number" });
+    }
+
+    // Return safe user info (exclude password)
+
+    res.status(200).json({ message: "number fetched successful", user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Database error", error: err });
+  }
+};
+
+exports.changeUserPasswordController = async (req, res) => {
+  const { password, id } = req.body;
+ 
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await loginModel.changePassword(id, hashedPassword);
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Error while updating the password",
+      error: err.message,
+    });
   }
 };
