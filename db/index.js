@@ -1,9 +1,22 @@
 const mysql = require("mysql2");
 // MySQL connection (without specifying database yet)
+// const db = mysql.createConnection({
+//   host: process.env.DB_HOST,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+// });
+
+import mysql from "mysql2/promise";
+
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
+  host: process.env.DB_HOST,        // e.g. gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com
+  port: process.env.DB_PORT || 4000, // TiDB Cloud serverless uses 4000
+  user: process.env.DB_USER,        // e.g. 3dMEARM9eQhpFEv.root
   password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,    // e.g. test
+  ssl: {
+    rejectUnauthorized: true        // required for TiDB Cloud
+  }
 });
 
 // Connect to MySQL
