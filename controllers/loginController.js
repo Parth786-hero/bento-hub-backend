@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const loginModel = require("../models/loginModel.js");
+const isProduction = process.env.NODE_ENV === "production";
 
 exports.loginUser = async (req, res) => {
   const { number, password } = req.body;
@@ -30,15 +31,21 @@ exports.loginUser = async (req, res) => {
       // expiresIn: "1h",
     });
 
-    // Send token in HTTP-only cookie
+    // // Send token in HTTP-only cookie
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: false, // set true in production with HTTPS
+    //   sameSite: "lax",
+
+    //   // maxAge: 60 * 60 * 1000,
+    // });
+
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // set true in production with HTTPS
-      sameSite: "lax",
-
-      // maxAge: 60 * 60 * 1000,
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax"
     });
-
+    
     // Return safe user info (exclude password)
     const { password: pwd, ...safeUser } = user;
     res.json({ message: "Login successful", user: safeUser });
