@@ -6,7 +6,7 @@ const mysql = require("mysql2");
 //   password: process.env.DB_PASSWORD,
 // });
 
-import mysql from "mysql2/promise";
+// import mysql from "mysql2/promise";
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,        // e.g. gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com
