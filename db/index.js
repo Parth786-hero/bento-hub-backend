@@ -93,8 +93,26 @@ db.connect((err) => {
       });
 
       // Products table
-      const createProductsTable = `
-      CREATE TABLE IF NOT EXISTS products (
+      // const createProductsTable = `
+      // CREATE TABLE IF NOT EXISTS products (
+      //   id INT AUTO_INCREMENT PRIMARY KEY,
+      //   name VARCHAR(150) NOT NULL,
+      //   description TEXT,
+      //   price DECIMAL(10,2) NOT NULL,
+      //   discounted_price DECIMAL(10,2) NOT NULL DEFAULT 0,
+      //   image_url VARCHAR(255),
+      //   stock INT DEFAULT 0,
+      //   quantity VARCHAR(150) NOT NULL,
+      //   category_id INT,
+      //   sub_category_id INT NOT NULL,
+      //   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      //   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      //   FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+      //   FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id) ON DELETE SET NULL
+      // );
+      
+      // `;
+      const createProductsTable = `CREATE TABLE IF NOT EXISTS products (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(150) NOT NULL,
         description TEXT,
@@ -108,10 +126,9 @@ db.connect((err) => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
-        FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id) ON DELETE SET NULL
-      );
+        FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id) ON DELETE CASCADE
+      );`
       
-      `;
       db.query(createProductsTable, (err) => {
         if (err) throw err;
         console.log("Products table created or already exists");
