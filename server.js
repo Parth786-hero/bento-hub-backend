@@ -24,13 +24,32 @@ const app = express();
 
 
 
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     methods: ["GET", "POST" , "PUT" , "PATCH"],
+//     credentials: true,
+//   })
+// );
+const allowedOrigins = [
+  "http://localhost:5173",                     // local dev
+  "https://parth786-hero.github.io"            // deployed frontend on GitHub Pages
+];
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST" , "PUT" , "PATCH"],
-    credentials: true,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH"],
+    credentials: true, // only if you’re using cookies or auth headers
   })
 );
+
+
 
 // Middleware to handle JSON request bodies
 // app.use(bodyParser.json());
