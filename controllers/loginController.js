@@ -42,7 +42,8 @@ exports.loginUser = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: isProduction,
+      // secure: isProduction,
+      secure : true,
       // sameSite: isProduction ? "None" : "Lax"
       sameSite : "None"
     });
