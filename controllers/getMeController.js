@@ -3,6 +3,7 @@ const User = require("../models/userModel.js"); // adjust path to your user mode
 
 exports.getMe = async (req, res) => {
   const token = req.cookies.token;
+  
   if (!token) return res.status(401).json({ message: "Not authenticated" });
 
   try {

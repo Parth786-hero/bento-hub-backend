@@ -14,7 +14,7 @@ const router = express.Router();
 // Registration route
 router.post("/register", registerUser);
 router.post("/login" , loginUser);
-router.get("/me" , getMe);
+router.get("/me" ,authMiddleware,  getMe);
 router.post("/logout", logoutUser);
 router.get("/category" , categoryController);
 router.get("/products" , productController);
