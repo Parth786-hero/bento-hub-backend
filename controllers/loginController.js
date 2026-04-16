@@ -43,7 +43,8 @@ exports.loginUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? "None" : "Lax"
+      // sameSite: isProduction ? "None" : "Lax"
+      sameSite : "None"
     });
     
     // Return safe user info (exclude password)
