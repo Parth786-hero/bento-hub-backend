@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel.js"); // adjust path to your user model
 
 exports.getMe = async (req, res) => {
-  const token = req.cookies.token;
-  
+  const token = req.headers.authorization?.split(" ")[1];
+ 
   if (!token) return res.status(401).json({ message: "Not authenticated" });
 
   try {

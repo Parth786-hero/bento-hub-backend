@@ -5,7 +5,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 exports.loginUser = async (req, res) => {
   const { number, password } = req.body;
-
+  
   if (!number || !password) {
     return res
       .status(400)
@@ -19,7 +19,7 @@ exports.loginUser = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid number or password" });
     }
-
+   
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -31,26 +31,11 @@ exports.loginUser = async (req, res) => {
       // expiresIn: "1h",
     });
 
-    // // Send token in HTTP-only cookie
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: false, // set true in production with HTTPS
-    //   sameSite: "lax",
-
-    //   // maxAge: 60 * 60 * 1000,
-    // });
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      // secure: isProduction,
-      secure : true,
-      // sameSite: isProduction ? "None" : "Lax"
-      sameSite : "None"
-    });
+   
     
     // Return safe user info (exclude password)
     const { password: pwd, ...safeUser } = user;
-    res.json({ message: "Login successful", user: safeUser });
+    res.json({ message: "Login successful", user: safeUser , token});
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Database error", error: err });
