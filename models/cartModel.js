@@ -109,6 +109,35 @@ const cartModel = {
       });
     });
   },
+  fetchOrderHistoryPerUser: (userId) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+        SELECT 
+          c.cart_id,
+          c.created_at,
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'id', p.id,
+              'name', p.name,
+              'price', p.price,
+              'image_url' , p.image_url,
+              'quantity', cs.quantity,
+              'purchased_price', cs.purchased_price
+            )
+          ) AS products
+        FROM carts c
+        JOIN cart_snapshots cs ON c.cart_id = cs.cart_id
+        JOIN products p ON cs.product_id = p.id
+        WHERE c.user_id = ?
+        GROUP BY c.cart_id, c.created_at
+        ORDER BY c.created_at DESC;
+      `;
+      db.query(sql, [userId], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+  },
   
 };
 

@@ -68,3 +68,22 @@ exports.checkoutCart = async (req, res) => {
   }
  
 };
+
+exports.fetchOrderHistoryPerUserController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Call the model
+    const result = await cartModel.fetchOrderHistoryPerUser(userId);
+
+    // Return the order history as JSON
+    res.json({
+      message: "Order history fetched successfully",
+      orders: result
+    });
+  } catch (err) {
+    console.error("Error fetching order history:", err);
+    res.status(500).json({ message: "Failed to fetch order history" });
+  }
+};
+

@@ -6,7 +6,7 @@ const {logoutUser} = require("../controllers/logoutController");
 const {categoryController , fetchAllSubCategoryController} = require("../controllers/categoryController");
 const {productController , searchProductsController , fetchAllProductsBySubcat , insertIntoProductsController , updateProductByIdController , fetchProductsOnScrollController} = require("../controllers/productController");
 const {categoryWiseProductController} = require("../controllers/categoryWiseProductController");
-const { saveCart , getCart , checkoutCart} = require("../controllers/cartController");
+const { saveCart , getCart , checkoutCart , fetchOrderHistoryPerUserController} = require("../controllers/cartController");
 
 const authMiddleware = require("../middleware/index");
 const router = express.Router();
@@ -30,4 +30,5 @@ router.put("/products/:id" , updateProductByIdController);
 router.get("/productsOnScroll" , fetchProductsOnScrollController);
 router.get("/retrieveUser" , retrieveUser);
 router.patch("/changeUserPassword" , changeUserPasswordController);
+router.get("/fetchOrderHistoryPerUser" , authMiddleware , fetchOrderHistoryPerUserController);
 module.exports = router;
