@@ -151,7 +151,34 @@ const productModel = {
         });
       });
     });
+  },
+  applyTemporaryDiscount: (percentage) => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        UPDATE products
+        SET original_discounted_price = discounted_price,
+            discounted_price = price * (1 - ?/100)
+      `;
+      db.query(query, [percentage], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+  },
+  
+  resetTemporaryDiscount: () => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        UPDATE products
+        SET discounted_price = original_discounted_price
+      `;
+      db.query(query, (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
   }
+  
   
 };
 

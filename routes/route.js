@@ -4,7 +4,7 @@ const {loginUser , retrieveUser , changeUserPasswordController} = require("../co
 const {getMe} = require("../controllers/getMeController");
 const {logoutUser} = require("../controllers/logoutController");
 const {categoryController , fetchAllSubCategoryController} = require("../controllers/categoryController");
-const {productController , searchProductsController , fetchAllProductsBySubcat , insertIntoProductsController , updateProductByIdController , fetchProductsOnScrollController} = require("../controllers/productController");
+const {productController , searchProductsController , fetchAllProductsBySubcat , insertIntoProductsController , updateProductByIdController , fetchProductsOnScrollController , triggerDiscountController} = require("../controllers/productController");
 const {categoryWiseProductController} = require("../controllers/categoryWiseProductController");
 const { saveCart , getCart , checkoutCart , fetchOrderHistoryPerUserController} = require("../controllers/cartController");
 
@@ -31,4 +31,5 @@ router.get("/productsOnScroll" , fetchProductsOnScrollController);
 router.get("/retrieveUser" , retrieveUser);
 router.patch("/changeUserPassword" , changeUserPasswordController);
 router.get("/fetchOrderHistoryPerUser" , authMiddleware , fetchOrderHistoryPerUserController);
+router.post("/trigger-discount", triggerDiscountController);
 module.exports = router;

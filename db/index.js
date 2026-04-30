@@ -118,6 +118,7 @@ db.connect((err) => {
         description TEXT,
         price DECIMAL(10,2) NOT NULL,
         discounted_price DECIMAL(10,2) NOT NULL DEFAULT 0,
+        original_discounted_price DECIMAL(10,2) NOT NULL DEFAULT 0,
         image_url VARCHAR(255),
         stock INT DEFAULT 0,
         quantity VARCHAR(150) NOT NULL,

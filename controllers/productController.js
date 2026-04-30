@@ -192,3 +192,30 @@ exports.fetchProductsOnScrollController = async (req, res) => {
   }
 };
 
+// Trigger discount controller
+exports.triggerDiscountController = async (req, res) => {
+  try {
+    const { percentage, durationMinutes } = req.body;
+    
+    if (!percentage || !durationMinutes) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Update DB with discounted prices
+    await productModel.applyTemporaryDiscount(percentage);
+
+    // Emit socket event
+    req.io.emit("discountApplied", { percentage, durationMinutes });
+
+    // Reset after duration
+    setTimeout(async () => {
+      await productModel.resetTemporaryDiscount();
+      req.io.emit("discountReset");
+    }, durationMinutes * 60 * 1000);
+
+    res.json({ message: "Discount triggered successfully" });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: e.message || "Internal Server Error" });
+  }
+};
