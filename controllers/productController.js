@@ -204,13 +204,20 @@ exports.triggerDiscountController = async (req, res) => {
     // Update DB with discounted prices
     await productModel.applyTemporaryDiscount(percentage);
 
-    // Emit socket event
-    req.io.emit("discountApplied", { percentage, durationMinutes });
+    const startedAt = Date.now();
+
+    // Emit socket event with full discount status
+    req.io.emit("discountStatus", {
+      active: true,
+      percentage,
+      durationMinutes,
+      startedAt :Date.now(),
+    });
 
     // Reset after duration
     setTimeout(async () => {
       await productModel.resetTemporaryDiscount();
-      req.io.emit("discountReset");
+      req.io.emit("discountStatus", { active: false });
     }, durationMinutes * 60 * 1000);
 
     res.json({ message: "Discount triggered successfully" });
@@ -219,3 +226,4 @@ exports.triggerDiscountController = async (req, res) => {
     res.status(500).json({ message: e.message || "Internal Server Error" });
   }
 };
+
